@@ -5,6 +5,8 @@ public class Character {
 	int y;
 	int velX = 0;
 	int velY = 0;
+	BufferedImage currentImage;
+	
 	public int getVelX() {
 		return velX;
 	}
@@ -21,7 +23,6 @@ public class Character {
 		this.velY = velY;
 	}
 
-	BufferedImage currentImage;
 	
 	public Character(){
 		

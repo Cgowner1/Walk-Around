@@ -139,6 +139,16 @@ public class GameWindow extends JPanel implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		currentChar = ' ';
+		int key = e.getKeyCode();
+		
+		if(key == KeyEvent.VK_W){
+			player.setVelY(player.getVelY() + 3);
+		} else if(key == KeyEvent.VK_S){
+			player.setVelY(player.getVelY() - 3);
+		} else if(key == KeyEvent.VK_A){
+			player.setVelX(player.getVelX() + 3);
+		} else if(key == KeyEvent.VK_D){
+			player.setVelX(player.getVelX() - 3);
+		}
 	}
 }
