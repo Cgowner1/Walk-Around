@@ -72,18 +72,8 @@ public class GameWindow extends JPanel implements KeyListener {
 		//player.setY(player.getY() + 3);
 		//System.out.println(input.next());
 		
-		if(currentChar == 's'){
-			player.setY(player.getY() + 3);
-		}
-		if(currentChar == 'a'){
-			player.setX(player.getX() - 3);
-		}
-		if(currentChar == 'w'){
-			player.setY(player.getY() - 3);
-		}
-		if(currentChar == 'd'){
-			player.setX(player.getX() + 3);
-		}
+		player.setX(player.getX() + player.getVelX());
+		player.setY(player.getY() + player.getVelY());
 	}
 	
 	private void render() {
@@ -114,6 +104,19 @@ public class GameWindow extends JPanel implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		//player.setY(player.getY() + 3);
+			int key = e.getKeyCode();
+			
+			if(key == KeyEvent.VK_W){
+				player.setVelY(player.getVelY() - 3);
+			} else if(key == KeyEvent.VK_S){
+				player.setVelY(player.getVelY() + 3);
+			} else if(key == KeyEvent.VK_A){
+				player.setVelX(player.getVelX() - 3);
+			} else if(key == KeyEvent.VK_D){
+				player.setVelX(player.getVelX() + 3);
+			}
+			
+	/*
 		if(e.getKeyChar() == 's'){
 			//player.setY(player.getY() + 3);
 			currentChar = 's';
@@ -130,7 +133,7 @@ public class GameWindow extends JPanel implements KeyListener {
 			//player.setX(player.getX() + 3);
 			currentChar = 'd';
 		}
-		
+	*/
 	}
 
 	@Override

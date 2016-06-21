@@ -3,6 +3,24 @@ import java.awt.image.BufferedImage;
 public class Character {
 	int x;
 	int y;
+	int velX = 0;
+	int velY = 0;
+	public int getVelX() {
+		return velX;
+	}
+
+	public void setVelX(int velX) {
+		this.velX = velX;
+	}
+
+	public int getVelY() {
+		return velY;
+	}
+
+	public void setVelY(int velY) {
+		this.velY = velY;
+	}
+
 	BufferedImage currentImage;
 	
 	public Character(){
