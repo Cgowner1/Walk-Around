@@ -28,6 +28,15 @@ public class GameWindow extends JPanel implements KeyListener {
 	private boolean changeDirection = false;
 	private byte recentAxis; // 1 is x axis, 2 is y axis
 	private BufferedImage[] currentImageArray;
+	private int followerTargetX;
+	private int followerTargetY;
+	private boolean followerAtTarget;
+	private Character follower;
+	private boolean w;
+	private boolean a;
+	private boolean s;
+	private boolean d;
+	
 	
 	
 	public GameWindow(){
@@ -68,6 +77,9 @@ public class GameWindow extends JPanel implements KeyListener {
 			}
 		}
 		player = new Character(100, 100, walkFrames[0][0]);
+		follower = new Character(50, 50);
+		followerTargetX = 300;
+		followerTargetX = 300;
 		currentFrame = 0;
 	}
 	
@@ -75,19 +87,55 @@ public class GameWindow extends JPanel implements KeyListener {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.drawImage(player.getCurrentImage(), null, player.getX(), player.getY());
+		g2d.drawRect(follower.getX(), follower.getY(), 20, 20);
+		g2d.drawString("w   " + w, 500, 100);
+		g2d.drawString("s   " + s, 500, 200);
+		g2d.drawString("d   " + d, 500, 300);
+		g2d.drawString("a   " + a, 500, 400);
+		g2d.drawString("" + frameCounter, 1000, 100);
 	}
 	
 	public void doGameUpdates() {
+		
+		
+		
+		//************************PLAYER CONTROL**************************
+		
+		frameCounter++;
+		
+		//y axis movement
+		if(w){
+			player.setVelY(-3);
+		}
+		else if(s){
+			player.setVelY(3);
+		}
+		else{
+			player.setVelY(0);
+		}
+		
+		//x axis movement
+		if(d){
+			player.setVelX(3);
+		}
+		else if(a){
+			player.setVelX(-3);
+		}
+		else{
+			player.setVelX(0);
+		}
+		
+		
+		
+		
 		if(player.getVelX() == 0 && player.getVelY() == 0){
 			player.setCurrentImage(currentImageArray[0]);
 		}
-		frameCounter++;
+	
 		if(frameCounter == 60 || changeDirection == true){
 			frameCounter = 0;
 			currentFrame = 2;
 		}
-		//player.setY(player.getY() + 3);
-		//System.out.println(input.next());
 		
 		player.setX(player.getX() + player.getVelX());
 		player.setY(player.getY() + player.getVelY());
@@ -109,6 +157,53 @@ public class GameWindow extends JPanel implements KeyListener {
 				currentImageArray = walkFrames[3];
 			}
 		}
+		
+		//************************END OF PLAYER CONTROL*************************
+		
+		if(frameCounter % 15 == 0){
+			
+			followerTargetX = player.getX();
+			followerTargetY = player.getY();
+		}
+		if(follower.getX() == followerTargetX && follower.getY() == followerTargetY){
+			followerAtTarget = true;
+		}
+		else{
+			followerAtTarget = false;
+		}
+		
+		if(!followerAtTarget){
+			int xdiff = Math.abs(followerTargetX - follower.getX());
+			int ydiff = Math.abs(followerTargetY - follower.getY());
+			System.out.println(ydiff);
+			int changex = 1;
+			int changey = 1;
+			if(xdiff > ydiff){
+				changex = largestDiv(xdiff);
+				changey = (ydiff)/(xdiff/changex);
+						//largestDiv(ydiff);
+			}
+			if(xdiff <= ydiff){
+				changey = largestDiv(ydiff);
+				changex = (xdiff)/(ydiff/changey);
+			}
+			//end test
+			if(follower.getX() > followerTargetX){
+				follower.x -= changex;
+			}
+			if(follower.getX() < followerTargetX){
+				follower.x += changex;
+			}
+			if(follower.getY() > followerTargetY){
+				follower.y -= changey;
+			}
+			if(follower.getY() < followerTargetY){
+				follower.y += changey;
+			}
+		}
+		
+		//***********************FOLLOWER PATH FINDER*****************************
+
 	}
 	
 	private void render() {
@@ -141,6 +236,15 @@ public class GameWindow extends JPanel implements KeyListener {
 		
 	}
 	
+	public int largestDiv(int num){
+		for(int i = 4; i > 1; i--){
+			if(num % i == 0){
+				return i;
+			}
+		}
+		return 1;
+	}
+	
 	public void gameLoop() {
 		timer = new Timer();
 		timer.schedule(new LoopTask(), 0, 1000 / 60);
@@ -170,30 +274,39 @@ public class GameWindow extends JPanel implements KeyListener {
 			int key = e.getKeyCode();
 			
 			if(key == KeyEvent.VK_W){
-				player.setVelY(player.getVelY() - 3);
+				w = true;
+				
+				
+//				player.setVelY(player.getVelY() - 3);
 				currentDirection = 'w';
 				changeDirection = true;
 				recentAxis = 2;
 				currentImageArray = walkFrames[2];
+				
 			} else if(key == KeyEvent.VK_S){
-				player.setVelY(player.getVelY() + 3);
+				s = true;
+//				player.setVelY(player.getVelY() + 3);
 				currentDirection = 's';
 				changeDirection = true;
 				recentAxis = 2;
 				currentImageArray = walkFrames[0];
 			} else if(key == KeyEvent.VK_A){
-				player.setVelX(player.getVelX() - 3);
+				a = true;
+//				player.setVelX(player.getVelX() - 3);
 				currentDirection = 'a';
 				changeDirection = true;
 				recentAxis = 1;
 				currentImageArray = walkFrames[1];
 			} else if(key == KeyEvent.VK_D){
-				player.setVelX(player.getVelX() + 3);
+				d = true;
+//				player.setVelX(player.getVelX() + 3);
 				currentDirection = 'd';
 				changeDirection = true;
 				recentAxis = 1;
 				currentImageArray = walkFrames[3];
 			}
+			
+			
 			
 	/*
 		if(e.getKeyChar() == 's'){
@@ -221,13 +334,17 @@ public class GameWindow extends JPanel implements KeyListener {
 		int key = e.getKeyCode();
 		
 		if(key == KeyEvent.VK_W){
-			player.setVelY(player.getVelY() + 3);
+			w = false;
+			//player.setVelY(player.getVelY() + 3);
 		} else if(key == KeyEvent.VK_S){
-			player.setVelY(player.getVelY() - 3);
+			s = false;
+			//player.setVelY(player.getVelY() - 3);
 		} else if(key == KeyEvent.VK_A){
-			player.setVelX(player.getVelX() + 3);
+			a = false;
+			//player.setVelX(player.getVelX() + 3);
 		} else if(key == KeyEvent.VK_D){
-			player.setVelX(player.getVelX() - 3);
+			d = false;
+			//player.setVelX(player.getVelX() - 3);
 		}
 	}
 }
